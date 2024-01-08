@@ -1,208 +1,366 @@
 "use client";
+// pages/index.tsx
 import React, { useState, useEffect, useRef } from "react";
 import Employee from "./models/Employee";
 import Navbar from "./components/Navbar";
 import Dialog from "./components/Dialog";
+import styled from "styled-components";
 
 export default function Home() {
-	let emptyEmployee: Employee = {
-		id: null,
-		name: "",
-		phone: 0,
-		position: "",
-	};
+  let emptyEmployee: Employee = {
+    id: null,
+    name: "",
+    phone: "",
+    position: "",
+  };
 
-	const [employees, setEmployees] = useState<Employee[]>([]);
-	const [employeeDialog, setEmployeeDialog] = useState<boolean>(false);
-	const [deleteEmployeeDialog, setDeleteEmployeeDialog] =
-		useState<boolean>(false);
-	const [employee, setEmployee] = useState<Employee>(emptyEmployee);
-	const [submitted, setSubmitted] = useState<boolean>(false);
-	const [isLoading, setIsLoading] = useState(true);
+  const [employees, setEmployees] = useState<Employee[]>([]);
+  const [employeeDialog, setEmployeeDialog] = useState<boolean>(false);
+  const [deleteEmployeeDialog, setDeleteEmployeeDialog] =
+    useState<boolean>(false);
+  const [employee, setEmployee] = useState<Employee>(emptyEmployee);
+  const [submitted, setSubmitted] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState(true);
 
-	useEffect(() => {
-		fetch("/api/employees")
-			.then((response) => response.json())
-			.then((data) => {
-				setEmployees(data);
-				setIsLoading(false);
-				console.log(employees)
-			});
-	}, []);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch("/api/employees");
+        const data = await response.json();
+        setEmployees(data); // Update state with fetched data
+        setIsLoading(false); // Set loading state to false after data fetch
+        console.log(data); // Log the fetched data after updating state
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        setIsLoading(false); // Set loading state to false in case of an error
+      }
+    };
 
-	const confirmDeleteEmployee = (employee: Employee) => {
-		setEmployee(employee);
-		setDeleteEmployeeDialog(true);
-	};
+    fetchData();
+  }, []);
 
-	const hideDeleteEmployeeDialog = () => {
-		setDeleteEmployeeDialog(false);
-	};
+  useEffect(() => {
+    console.log(employees); // Log the updated employees state whenever it changes
+  }, [employees]); // Add employees to the dependency array
 
-	const deleteEmployee = () => {
-		setIsLoading(true);
-		let status = 200;
-		fetch(`/api/employees`, {
-			method: "DELETE",
-			headers: {
-				"Content-Type": "application/json",
-			},
-			body: JSON.stringify({ id: employee.id }),
-		})
-			.then((response) => {
-				status = response.status;
-				return response.json();
-			})
-			.then((deletedemployee) => {
-				setEmployees(
-					employees.filter(
-						(employee) => employee.id !== deletedemployee.id
-					)
-				);
-				fetch("/api/employees")
-					.then((response) => {
-						status = response.status;
-						return response.json();
-					})
-					.then((data) => {
-						setEmployees(data);
-						setIsLoading(false);
-					});
-				hideDeleteEmployeeDialog();
-			});
-	};
+  const confirmDeleteEmployee = (employee: Employee) => {
+    setEmployee(employee);
+    setDeleteEmployeeDialog(true);
+  };
 
-	const openNew = () => {
-		setEmployee(emptyEmployee);
-		setSubmitted(false);
-		setEmployeeDialog(true);
-	};
+  const hideDeleteEmployeeDialog = () => {
+    setDeleteEmployeeDialog(false);
+  };
 
-	const saveEmployee = () => {
-		setSubmitted(true);
-		setIsLoading(true);
+  const deleteEmployee = (idToDelete: any) => {
+    setIsLoading(true);
+    let status = 200;
+    fetch(`/api/employees`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ id: idToDelete }),
+    })
+      .then((response) => {
+        status = response.status;
+        return response.json();
+      })
+      .then((deletedemployee) => {
+        setEmployees(
+          employees.filter((employee) => employee.id !== deletedemployee.id)
+        );
+        fetch("/api/employees")
+          .then((response) => {
+            status = response.status;
+            return response.json();
+          })
+          .then((data) => {
+            setEmployees(data);
+            setIsLoading(false);
+          });
+        hideDeleteEmployeeDialog();
+      });
+  };
 
-		if (!employee.name) {
-			setIsLoading(false);
-			return;
-		}
+  const openNew = () => {
+    setEmployee(emptyEmployee);
+    setSubmitted(false);
+    setEmployeeDialog(true);
+  };
 
-		fetch("/api/employees", {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-			},
-			body: JSON.stringify({
-				name: employee.name,
-				position: employee.position,
-				phone: employee.phone,
-			}),
-		})
-			.then((response) => response.json())
-			.then((createdemployee) => {
-				setEmployees([...employees, createdemployee]);
-				setEmployee({ id: "", name: "", position: "", phone: 0 });
-				fetch("/api/employees")
-					.then((response) => response.json())
-					.then((data) => {
-						setEmployees(data);
-						setIsLoading(false);
-					});
-				hideDialog();
-			});
-	};
+  const saveEmployee = () => {
+    setSubmitted(true);
+    setIsLoading(true);
 
-	const hideDialog = () => {
-		setSubmitted(false);
-		setEmployeeDialog(false);
-	};
+    if (!employee.name) {
+      setIsLoading(false);
+      return;
+    }
 
-	const onInputChange = (
-		e: React.ChangeEvent<HTMLInputElement>,
-		name: string
-	) => {
-		const val = (e.target && e.target.value) || "";
-		let _employee = { ...employee };
+    fetch("/api/employees", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name: employee.name,
+        position: employee.position,
+        phone: employee.phone,
+      }),
+    })
+      .then((response) => response.json())
+      .then((createdemployee) => {
+        setEmployees([...employees, createdemployee]);
+        setEmployee({ id: "", name: "", position: "", phone: "" });
+        fetch("/api/employees")
+          .then((response) => response.json())
+          .then((data) => {
+            setEmployees(data);
+            console.log(data);
+            setIsLoading(false);
+          });
+        hideDialog();
+      });
+  };
 
-		// @ts-ignore
-		_employee[`${name}`] = val;
+  const hideDialog = () => {
+    setSubmitted(false);
+    setEmployeeDialog(false);
+  };
 
-		setEmployee(_employee);
-	};
+  const onInputChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    name: string
+  ) => {
+    const val = (e.target && e.target.value) || "";
+    let _employee = { ...employee };
 
-	return (
-		<>
-			<Navbar open={openNew} />
-			<div className="m-3">
-				<h1>Employees</h1>
-				<div className="card">
-					{isLoading ? (
-						<img src="loading.svg"></img>
-					) : (
-						<>
-							{employees.map((item) => {
-								<p>{item.name}</p>
-							})}
-						</>
-					)}
-				</div>
-				<Dialog visible={employeeDialog} onHide={hideDialog}>
-					<div className="field">
-						<label htmlFor="name" className="font-bold">
-							Name
-						</label>
-						{submitted && !employee.name && (
-							<small className="p-error">Name is required</small>
-						)}
-						<input
-							id="name"
-							value={employee.name}
-							onChange={(e) => onInputChange(e, "name")}
-							required
-						></input>
+    // @ts-ignore
+    _employee[`${name}`] = val;
 
-						<br></br>
-						<label htmlFor="position" className="font-bold">
-							Position
-						</label>
-						{submitted && !employee.position && (
-							<small className="p-error">
-								Position is required
-							</small>
-						)}
-						<input
-							id="position"
-							value={employee.position}
-							onChange={(e) => onInputChange(e, "position")}
-							required
-						></input>
+    setEmployee(_employee);
+  };
 
-						<label htmlFor="phone" className="font-bold">
-							Phone
-						</label>
-						{submitted && !employee.phone && (
-							<small className="p-error">Phone is required</small>
-						)}
-						<input
-							id="phone"
-							value={employee.phone}
-							onChange={(e) => onInputChange(e, "phone")}
-							required
-						></input>
-					</div>
-					<button onClick={saveEmployee}>Add</button>
-				</Dialog>
-				<Dialog visible={deleteEmployeeDialog} onHide={hideDialog}>
-					<div>
-						{employee && (
-							<span>
-								Are you sure you want to delete{" "}
-								<b>{employee.name}</b>?
-							</span>
-						)}
-					</div>
-				</Dialog>
-			</div>
-		</>
-	);
+  const deletion = (id: any) => {
+    deleteEmployee(id);
+  };
+
+  const Title = styled.h1`
+    font-size: 2.75em;
+    text-align: left;
+    width: 100%;
+    color: #1a1660;
+    margin: 0.5em;
+    margin-left: 1em;
+    font-weight: 700;
+  `;
+
+  const Input = styled.input`
+    all: unset;
+    font-size: 1.25em;
+    margin: 0;
+    padding: 0.75em;
+    padding-top: 1em;
+    box-shadow: 1px 1px 20px #e7e7e7;
+    width: 275px;
+    font-weight: 500;
+    border-radius: 7.5px;
+    margin-left: 1.75em;
+  `;
+
+  const Label = styled.label`
+    color: #989898;
+    font-weight: 500;
+    margin-left: 2.5em;
+    transform: translate(5px, 22.5px);
+  `;
+
+  const Button = styled.button<{ $secondary?: boolean }>`
+    all: unset;
+    background: ${(props) => (props.$secondary ? "#transparent" : "#ff6584;")};
+    border: ${(props) => (props.$secondary ? "#ff6584" : "transparent")} 6px
+      solid;
+    border-radius: 9px;
+    margin-top: 1em;
+    margin-bottom: 1em;
+    margin-left: 1.25em;
+    font-weight: 300;
+    color: ${(props) => (props.$secondary ? "#ff6584" : "white")};
+    padding: 0.5em 1.25em;
+    cursor: pointer;
+    margin-right: 0.75em;
+    font-size: 1.75em;
+    width: 125px;
+    text-align: center;
+  `;
+
+  const Small = styled.small`
+    transform: translate(40px, 75px);
+    color: #ff6584;
+  `;
+
+  const Horizontal = styled.div`
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 360px;
+  `;
+
+  const CustomTable = styled.table`
+    border-collapse: collapse;
+    width: 1280px;
+  `;
+
+  const TableHeader = styled.th`
+    padding: 8px;
+    background-color: #6c63ff;
+    color: white;
+  `;
+
+  const TableCell = styled.td`
+    padding: 8px;
+    &:last-child {
+      text-align: center;
+    }
+  `;
+
+  const TableRow = styled.tr`
+    &:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+  `;
+
+  const DeleteButton = styled.button`
+    background-color: #6c63ff;
+    color: white;
+    font-size: 1em;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    padding: 0.75em;
+	border-radius: 0.5em;
+  `;
+
+  const Center = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  `;
+
+  return (
+    <>
+      {isLoading ? (
+        <img
+          style={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+          }}
+          src="loading.svg"
+        ></img>
+      ) : (
+        <>
+          <Navbar open={openNew} />
+
+          <div className="m-3">
+            <Title>Employees</Title>
+            <Center>
+              {isLoading ? (
+                <></>
+              ) : employees.length > 0 ? (
+                <CustomTable>
+                  <thead>
+                    <tr>
+                      <TableHeader>Name</TableHeader>
+                      <TableHeader>Position</TableHeader>
+                      <TableHeader>Phone</TableHeader>
+                      <TableHeader>Action</TableHeader>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {employees.map((employee) => (
+                      <TableRow key={employee.id}>
+                        <TableCell>{employee.name}</TableCell>
+                        <TableCell>{employee.position}</TableCell>
+                        <TableCell>{employee.phone}</TableCell>
+                        <TableCell>
+                          <DeleteButton onClick={() => deletion(employee.id)}>
+                            Delete
+                          </DeleteButton>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </tbody>
+                </CustomTable>
+              ) : (
+                <p>No employees found.</p> // Render a message if no employees are available
+              )}
+            </Center>
+            <Dialog visible={employeeDialog} onHide={hideDialog}>
+              <Title>Add employee</Title>
+              <Label htmlFor="name" className="font-bold">
+                Name
+              </Label>
+              {submitted && !employee.name && (
+                <Small className="p-error">Name is required</Small>
+              )}
+              <Input
+                id="name"
+                key="name"
+                value={employee.name}
+                onChange={(e) => onInputChange(e, "name")}
+                required
+              ></Input>
+
+              <br></br>
+              <Label htmlFor="position" className="font-bold">
+                Position
+              </Label>
+              {submitted && !employee.position && (
+                <Small className="p-error">Position is required</Small>
+              )}
+              <Input
+                id="position"
+                key="position"
+                value={employee.position}
+                onChange={(e) => onInputChange(e, "position")}
+                required
+              ></Input>
+
+              <Label htmlFor="phone" className="font-bold">
+                Phone
+              </Label>
+              {submitted && !employee.phone && (
+                <Small className="p-error">Phone is required</Small>
+              )}
+              <Input
+                id="phone"
+                key="phone"
+                value={employee.phone}
+                onChange={(e) => onInputChange(e, "phone")}
+                required
+              ></Input>
+              <Horizontal>
+                <Button onClick={saveEmployee}>→</Button>
+                <Button $secondary onClick={hideDialog}>
+                  ×
+                </Button>
+              </Horizontal>
+            </Dialog>
+            <Dialog visible={deleteEmployeeDialog} onHide={hideDialog}>
+              <div>
+                {employee && (
+                  <span>
+                    Are you sure you want to delete <b>{employee.name}</b>?
+                  </span>
+                )}
+              </div>
+            </Dialog>
+          </div>
+        </>
+      )}
+    </>
+  );
 }

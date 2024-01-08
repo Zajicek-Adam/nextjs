@@ -19,7 +19,13 @@ export default function Dialog({children, visible, onHide} : DialogProps) {
 	const Container = styled.div<{$visible?: boolean;}>`
 		display: flex;
 		justify-content: center;
-		align-items: center;
+		align-items: flex-start;
+		flex-direction: column;	
+		background-color: white;
+		position: absolute;
+		left: 50%;
+		top: 50%;
+		transform: translate(-50%, -50%);
         visibility: ${props => props.$visible? "visible" : "collapse"};
 	`;
 

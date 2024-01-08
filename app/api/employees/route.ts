@@ -36,6 +36,8 @@ export async function POST(req: Request, res: Response) {
   try {
     const body = await req.json();
 
+	console.log(body);
+
     if (!body.name || !body.position || !body.phone) {
       return new Response(
         JSON.stringify({
@@ -58,6 +60,8 @@ export async function POST(req: Request, res: Response) {
       },
     });
 
+	console.log("Employee: " + employee);
+
     return new Response(JSON.stringify(employee), {
       status: 200, // Change status to 201 for resource created
       headers: {
@@ -65,6 +69,7 @@ export async function POST(req: Request, res: Response) {
       },
     });
   } catch (e) {
+	console.log(e)
     return new Response(
       JSON.stringify({
         message: "Internal Server Error",
