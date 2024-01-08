@@ -44,11 +44,6 @@ export default function Home() {
     fetchData();
   }, []);
 
-  const confirmDeleteEmployee = (employee: Employee) => {
-    setEmployee(employee);
-    setDeleteEmployeeDialog(true);
-  };
-
   const hideDeleteEmployeeDialog = () => {
     setDeleteEmployeeDialog(false);
   };
@@ -128,6 +123,9 @@ export default function Home() {
   const hideDialog = () => {
     setSubmitted(false);
     setEmployeeDialog(false);
+	setName("");
+	setPhone("");
+	setPosition("");
   };
 
   const deletion = (id: string | null) => {
@@ -289,10 +287,10 @@ export default function Home() {
                   </tbody>
                 </CustomTable>
               ) : (
-                <p>No employees found.</p> // Render a message if no employees are available
+                <Title>No employees found.</Title> // Render a message if no employees are available
               )}
             </Center>
-            <Dialog visible={employeeDialog} onHide={hideDialog}>
+            <Dialog visible={employeeDialog}>
               <Title>Add employee</Title>
               <Label htmlFor="name" className="font-bold">
                 Name
@@ -342,15 +340,6 @@ export default function Home() {
                   ×
                 </Button>
               </Horizontal>
-            </Dialog>
-            <Dialog visible={deleteEmployeeDialog} onHide={hideDialog}>
-              <div>
-                {employee && (
-                  <span>
-                    Are you sure you want to delete <b>{employee.name}</b>?
-                  </span>
-                )}
-              </div>
             </Dialog>
           </div>
         </>
