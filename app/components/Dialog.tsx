@@ -9,7 +9,7 @@ interface DialogProps {
 
 export default function Dialog({children, visible, onHide} : DialogProps) {
 	const Title = styled.h1`
-		font-size: 2.25em;
+		font-size: 2em;
 		text-align: left;
 		color: #1a1660;
         margin: 0;

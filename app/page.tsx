@@ -45,10 +45,6 @@ export default function Home() {
     fetchData();
   }, []);
 
-  useEffect(() => {
-    console.log(employees); // Log the updated employees state whenever it changes
-  }, [employees]); // Add employees to the dependency array
-
   const confirmDeleteEmployee = (employee: Employee) => {
     setEmployee(employee);
     setDeleteEmployeeDialog(true);
@@ -147,7 +143,7 @@ export default function Home() {
     width: 100%;
     color: #1a1660;
     margin: 0.5em;
-    margin-left: 1em;
+    margin-left: 0.5em;
     font-weight: 700;
   `;
 
@@ -167,8 +163,8 @@ export default function Home() {
   const Label = styled.label`
     color: #989898;
     font-weight: 500;
-    margin-left: 2.5em;
-    transform: translate(5px, 22.5px);
+    margin-left: 2.2em;
+    transform: translate(15px, 22.5px);
   `;
 
   const Button = styled.button<{ $secondary?: boolean }>`
@@ -179,14 +175,14 @@ export default function Home() {
     border-radius: 9px;
     margin-top: 1em;
     margin-bottom: 1em;
-    margin-left: 1.25em;
+    margin-left: 0.9em;
     font-weight: 300;
     color: ${(props) => (props.$secondary ? "#ff6584" : "white")};
-    padding: 0.5em 1.25em;
+    padding: 0 .75em;
     cursor: pointer;
     margin-right: 0.75em;
-    font-size: 1.75em;
-    width: 125px;
+    font-size: 2.5em;
+    width: 140px;
     text-align: center;
   `;
 
@@ -199,22 +195,23 @@ export default function Home() {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    width: 360px;
+    width: 370px;
   `;
 
   const CustomTable = styled.table`
     border-collapse: collapse;
     width: 1280px;
+	margin: 2em;
   `;
 
   const TableHeader = styled.th`
-    padding: 8px;
+    padding: 0.9em;
     background-color: #6c63ff;
     color: white;
   `;
 
   const TableCell = styled.td`
-    padding: 8px;
+    padding: 0.9em;
     &:last-child {
       text-align: center;
     }
