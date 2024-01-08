@@ -303,6 +303,8 @@ export default function Home() {
 							phone={phone}
 							setPhone={setPhone}
 							submitted={submitted}
+							hideDialog={hideDialog}
+							saveEmployee={saveEmployee}
 						>
 						</Dialog>
 					</div>
