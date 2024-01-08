@@ -19,7 +19,6 @@ export default function Home() {
   const [position, setPosition] = useState<string>("");
   const [phone, setPhone] = useState<string>("");
 
-
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [employeeDialog, setEmployeeDialog] = useState<boolean>(false);
   const [deleteEmployeeDialog, setDeleteEmployeeDialog] =
@@ -131,10 +130,10 @@ export default function Home() {
     setEmployeeDialog(false);
   };
 
-  
-
-  const deletion = (id: any) => {
-    deleteEmployee(id);
+  const deletion = (id: string | null) => {
+    if (id != null) {
+      deleteEmployee(id);
+    }
   };
 
   const Title = styled.h1`
@@ -178,7 +177,7 @@ export default function Home() {
     margin-left: 0.9em;
     font-weight: 300;
     color: ${(props) => (props.$secondary ? "#ff6584" : "white")};
-    padding: 0 .75em;
+    padding: 0 0.75em;
     cursor: pointer;
     margin-right: 0.75em;
     font-size: 2.5em;
@@ -201,7 +200,7 @@ export default function Home() {
   const CustomTable = styled.table`
     border-collapse: collapse;
     width: 1280px;
-	margin: 2em;
+    margin: 2em;
   `;
 
   const TableHeader = styled.th`
@@ -231,7 +230,7 @@ export default function Home() {
     padding: 5px 10px;
     cursor: pointer;
     padding: 0.75em;
-	border-radius: 0.5em;
+    border-radius: 0.5em;
   `;
 
   const Center = styled.div`
@@ -251,9 +250,9 @@ export default function Home() {
             transform: "translate(-50%, -50%)",
           }}
           src="loading.svg"
-		  width={200}
-		  height={200}
-		  alt="loading screen"
+          width={200}
+          height={200}
+          alt="loading screen"
         ></Image>
       ) : (
         <>
@@ -334,7 +333,7 @@ export default function Home() {
                 id="phone"
                 key={phone}
                 value={phone}
-				onChange={(e) => setPhone(e.target.value)}
+                onChange={(e) => setPhone(e.target.value)}
                 required
               ></Input>
               <Horizontal>
