@@ -145,33 +145,6 @@ export default function Home() {
 		font-weight: 700;
 	`;
 
-	const Button = styled.button<{ $secondary?: boolean }>`
-		all: unset;
-		background: ${(props) =>
-			props.$secondary ? "#transparent" : "#ff6584;"};
-		border: ${(props) => (props.$secondary ? "#ff6584" : "transparent")} 6px
-			solid;
-		border-radius: 9px;
-		margin-top: 1em;
-		margin-bottom: 1em;
-		margin-left: 0.9em;
-		font-weight: 300;
-		color: ${(props) => (props.$secondary ? "#ff6584" : "white")};
-		padding: 0 0.75em;
-		cursor: pointer;
-		margin-right: 0.75em;
-		font-size: 2.5em;
-		width: 140px;
-		text-align: center;
-	`;
-
-	const Horizontal = styled.div`
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		width: 370px;
-	`;
-
 	const CustomTable = styled.table`
 		border-collapse: collapse;
 		width: 1280px;
@@ -331,19 +304,6 @@ export default function Home() {
 							setPhone={setPhone}
 							submitted={submitted}
 						>
-							<Horizontal>
-								<Button onClick={saveEmployee}>
-									<Image
-										src="arrow.svg"
-										width={50}
-										height={20}
-										alt="add employee"
-									/>
-								</Button>
-								<Button $secondary onClick={hideDialog}>
-									<strong>×</strong>
-								</Button>
-							</Horizontal>
 						</Dialog>
 					</div>
 				</>

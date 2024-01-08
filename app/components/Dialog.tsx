@@ -10,10 +10,24 @@ interface DialogProps {
 	setName: (arg1: string) => void;
 	setPhone: (arg1: string) => void;
 	setPosition: (arg1: string) => void;
+	saveEmployee: () => void;
+	hideDialog: () => void;
+	
 	submitted: boolean;
 }
 
-export default function Dialog({ children, visible, name, phone, position, setName, setPhone, setPosition, submitted }: DialogProps) {
+export default function Dialog({
+	visible,
+	name,
+	phone,
+	position,
+	setName,
+	setPhone,
+	setPosition,
+	submitted,
+	saveEmployee,
+	hideDialog
+}: DialogProps) {
 	const Container = styled.div<{ $visible?: boolean }>`
 		display: flex;
 		justify-content: center;
@@ -65,6 +79,34 @@ export default function Dialog({ children, visible, name, phone, position, setNa
 		transform: translate(15px, 22.5px);
 	`;
 
+	const Horizontal = styled.div`
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		width: 370px;
+	`;
+
+	
+	const Button = styled.button<{ $secondary?: boolean }>`
+		all: unset;
+		background: ${(props) =>
+			props.$secondary ? "#transparent" : "#ff6584;"};
+		border: ${(props) => (props.$secondary ? "#ff6584" : "transparent")} 6px
+			solid;
+		border-radius: 9px;
+		margin-top: 1em;
+		margin-bottom: 1em;
+		margin-left: 0.9em;
+		font-weight: 300;
+		color: ${(props) => (props.$secondary ? "#ff6584" : "white")};
+		padding: 0 0.75em;
+		cursor: pointer;
+		margin-right: 0.75em;
+		font-size: 2.5em;
+		width: 140px;
+		text-align: center;
+	`;
+
 	return (
 		<Container $visible={visible}>
 			<Title>Add employee</Title>
@@ -110,7 +152,19 @@ export default function Dialog({ children, visible, name, phone, position, setNa
 				onChange={(e) => setPhone(e.target.value)}
 				required
 			></Input>
-			{children}
+			<Horizontal>
+				<Button onClick={saveEmployee}>
+					<Image
+						src="arrow.svg"
+						width={50}
+						height={20}
+						alt="add employee"
+					/>
+				</Button>
+				<Button $secondary onClick={hideDialog}>
+					<strong>×</strong>
+				</Button>
+			</Horizontal>
 		</Container>
 	);
 }
