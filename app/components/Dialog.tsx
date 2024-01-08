@@ -26,6 +26,8 @@ export default function Dialog({children, visible, onHide} : DialogProps) {
 		left: 50%;
 		top: 50%;
 		transform: translate(-50%, -50%);
+		box-shadow: 1px 1px 20px #e7e7e7;
+		border-radius: 12px;
         visibility: ${props => props.$visible? "visible" : "collapse"};
 	`;
 

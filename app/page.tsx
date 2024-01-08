@@ -5,6 +5,7 @@ import Employee from "./models/Employee";
 import Navbar from "./components/Navbar";
 import Dialog from "./components/Dialog";
 import styled from "styled-components";
+import Image from "next/image";
 
 export default function Home() {
   let emptyEmployee: Employee = {
@@ -13,6 +14,11 @@ export default function Home() {
     phone: "",
     position: "",
   };
+
+  const [name, setName] = useState<string>("");
+  const [position, setPosition] = useState<string>("");
+  const [phone, setPhone] = useState<string>("");
+
 
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [employeeDialog, setEmployeeDialog] = useState<boolean>(false);
@@ -52,7 +58,7 @@ export default function Home() {
     setDeleteEmployeeDialog(false);
   };
 
-  const deleteEmployee = (idToDelete: any) => {
+  const deleteEmployee = (idToDelete: string) => {
     setIsLoading(true);
     let status = 200;
     fetch(`/api/employees`, {
@@ -93,7 +99,7 @@ export default function Home() {
     setSubmitted(true);
     setIsLoading(true);
 
-    if (!employee.name) {
+    if (!name) {
       setIsLoading(false);
       return;
     }
@@ -104,9 +110,9 @@ export default function Home() {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        name: employee.name,
-        position: employee.position,
-        phone: employee.phone,
+        name: name,
+        position: position,
+        phone: phone,
       }),
     })
       .then((response) => response.json())
@@ -129,18 +135,7 @@ export default function Home() {
     setEmployeeDialog(false);
   };
 
-  const onInputChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
-    name: string
-  ) => {
-    const val = (e.target && e.target.value) || "";
-    let _employee = { ...employee };
-
-    // @ts-ignore
-    _employee[`${name}`] = val;
-
-    setEmployee(_employee);
-  };
+  
 
   const deletion = (id: any) => {
     deleteEmployee(id);
@@ -251,7 +246,7 @@ export default function Home() {
   return (
     <>
       {isLoading ? (
-        <img
+        <Image
           style={{
             position: "absolute",
             top: "50%",
@@ -259,7 +254,10 @@ export default function Home() {
             transform: "translate(-50%, -50%)",
           }}
           src="loading.svg"
-        ></img>
+		  width={200}
+		  height={200}
+		  alt="loading screen"
+        ></Image>
       ) : (
         <>
           <Navbar open={openNew} />
@@ -303,14 +301,14 @@ export default function Home() {
               <Label htmlFor="name" className="font-bold">
                 Name
               </Label>
-              {submitted && !employee.name && (
+              {submitted && !name && (
                 <Small className="p-error">Name is required</Small>
               )}
               <Input
                 id="name"
-                key="name"
-                value={employee.name}
-                onChange={(e) => onInputChange(e, "name")}
+                key={name}
+                value={name}
+                onChange={(e) => setName(e.target.value)}
                 required
               ></Input>
 
@@ -318,28 +316,28 @@ export default function Home() {
               <Label htmlFor="position" className="font-bold">
                 Position
               </Label>
-              {submitted && !employee.position && (
+              {submitted && !position && (
                 <Small className="p-error">Position is required</Small>
               )}
               <Input
                 id="position"
-                key="position"
-                value={employee.position}
-                onChange={(e) => onInputChange(e, "position")}
+                key={position}
+                value={position}
+                onChange={(e) => setPosition(e.target.value)}
                 required
               ></Input>
 
               <Label htmlFor="phone" className="font-bold">
                 Phone
               </Label>
-              {submitted && !employee.phone && (
+              {submitted && !phone && (
                 <Small className="p-error">Phone is required</Small>
               )}
               <Input
                 id="phone"
-                key="phone"
-                value={employee.phone}
-                onChange={(e) => onInputChange(e, "phone")}
+                key={phone}
+                value={phone}
+				onChange={(e) => setPhone(e.target.value)}
                 required
               ></Input>
               <Horizontal>
